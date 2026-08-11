@@ -2,10 +2,11 @@
 name: tft-ui
 description: >-
   Builds multilevel TFT/screen UI menus and dialogs: navigate items, enter/exit
-  field edit, change values, BACK row with up-level icon, dotted separators when
-  rows are short, and rounded Confirm/Cancel buttons. Controller-agnostic (map
-  rotary, buttons, D-pad, etc. to the same actions). Use when implementing or
-  changing TFT/screen menus, parameter lists, submenu navigation, or dialog
+  field edit, change values, left-aligned names with right-aligned values, BACK
+  row with up-level icon, dotted separators when rows are short, rounded
+  Confirm/Cancel buttons, and binary parameters as checkboxes. Controller-agnostic
+  (map rotary, buttons, D-pad, etc. to the same actions). Use when implementing
+  or changing TFT/screen menus, parameter lists, submenu navigation, or dialog
   buttons on any embedded display UI.
 ---
 
@@ -29,6 +30,15 @@ Example mappings (use what the project has):
 
 Edit mode is local to the focused editable field. Navigation items (submenu entries, `BACK`) use **Activate** only; they do not stay in value-edit mode.
 
+Binary (boolean / ON–OFF) fields use the same Navigate / Activate / Adjust model: in edit mode, **Adjust** toggles the checkbox.
+
+## Parameter row alignment
+
+- **Item name (label):** left-aligned.
+- **Value:** right-aligned (numeric text, units, or checkbox control on the trailing side).
+- Do **not** concatenate name and value into one left-aligned string (e.g. avoid `"LEAK 10s"` as a single run); draw name and value as separate fields.
+- Navigation-only rows (`BACK`, submenu titles without a value) stay left-aligned; Confirm/Cancel follow their own button layout.
+
 ## Multilevel menus — BACK
 
 - Every submenu level lists **`BACK` as the first item**.
@@ -41,6 +51,19 @@ Edit mode is local to the focused editable field. Navigation items (submenu entr
 - If menu **item height is less than 22 px**, draw a **1 px high dark-dark gray dotted line** between items.
 - If item height is ≥ 22 px, do not require these separators.
 
+## Binary parameters — checkbox
+
+- Draw boolean / ON–OFF parameters as a **checkbox**, not as `ON`/`OFF` (or `true`/`false`) text.
+- Row layout: parameter **label** left-aligned + checkbox **value** right-aligned (trailing).
+- **OFF:** empty square outline (row foreground color).
+- **ON:** same square plus a **bird-like check mark** (✓): short stroke down-right, then longer stroke up-right—not a filled inner square, not an “X”, not ON/OFF text.
+- The ✓ must be **a little larger than the checkbox** (strokes may extend slightly outside the square).
+- The ✓ stroke must be **bold 4 px**:
+  - **Unfocused (not editing):** **green** (`0x07E0` RGB565 default).
+  - **Focused or edit mode:** **black** (`0x0000`).
+- Draw the box and check at native resolution (vector lines/rects or a 1:1 bitmap glyph); never upscale.
+- Focus / edit chrome follows the project’s row highlight; the checkbox itself shows only empty vs checked (mark color follows focused/edit rules above).
+
 ## Confirm / Cancel buttons
 
 - **Confirm:** light-light-green font on dark green background; left and right ends rounded.
@@ -51,10 +74,12 @@ Edit mode is local to the focused editable field. Navigation items (submenu entr
 - **Never upscale fonts.** Choose a properly sized font; do not scale a smaller face (on Adafruit GFX: `setTextSize(1)` + sized GFXfont only).
 - Never scale icons/bitmaps at draw time; draw native-resolution glyphs 1:1.
 - **Don't clear the whole screen.** Clear / redraw only the bar (row) that will be updated. Full-screen clear is allowed only on first paint or when the entire view must change (e.g. menu level switch).
+- **Binary values are checkboxes** (see above)—do not present them as ON/OFF text.
+- **Names left, values right** on parameter rows (see Parameter row alignment).
 
 ## Palette defaults
 
-Prefer RGB565 on 16-bit TFTs. Projects may translate to RGB888 / other formats; keep the same named roles. Hex may be overridden per project; roles, 15 px gap, rounded Confirm/Cancel, no font upscale, and the separator threshold are hard rules.
+Prefer RGB565 on 16-bit TFTs. Projects may translate to RGB888 / other formats; keep the same named roles. Hex may be overridden per project; roles, 15 px gap, rounded Confirm/Cancel, checkbox binary values, name/value alignment, no font upscale, and the separator threshold are hard rules.
 
 | Role | RGB565 | Notes |
 |------|--------|--------|
@@ -64,9 +89,12 @@ Prefer RGB565 on 16-bit TFTs. Projects may translate to RGB888 / other formats; 
 | Cancel fg | `0xFCD3` | light-light red |
 | Cancel bg | `0x9800` | dark red |
 | Separator (dotted, 1 px) | `0x2104` | dark-dark gray |
+| Checkbox outline | match row fg | empty square = OFF |
+| Checkbox check (bird ✓) | `0x07E0` / `0x0000` | bold **4 px**; green when unfocused; **black when focused or in edit mode**; slightly larger than the box |
 | Icon↔label gap | `15` px | hard rule |
 | Separator threshold | item height `< 22` px | hard rule |
+| Name / value alignment | — | name left; value right |
 
 ## Additional resources
 
-- Draw sketches (BACK row, separator, rounded button): [reference.md](reference.md)
+- Draw sketches (BACK row, separators, name/value alignment, rounded button, checkbox): [reference.md](reference.md)
