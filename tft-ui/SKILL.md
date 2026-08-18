@@ -74,12 +74,14 @@ Binary (boolean / ON–OFF) fields use the same Navigate / Activate / Adjust mod
 - **Never upscale fonts.** Choose a properly sized font; do not scale a smaller face (on Adafruit GFX: `setTextSize(1)` + sized GFXfont only).
 - Never scale icons/bitmaps at draw time; draw native-resolution glyphs 1:1.
 - **Don't clear the whole screen.** Clear / redraw only the bar (row) that will be updated. Full-screen clear is allowed only on first paint or when the entire view must change (e.g. menu level switch).
+- **One text line — one bar.** Each text line has its own clear/redraw bar. Never combine multiple lines into one large clear rectangle.
+- **Never merge clear rectangles across elements.** For each element: clear **only that element’s** rectangle, redraw it, then move to the next. Do not union/merge several elements into one big clear region (causes visible TFT flicker).
 - **Binary values are checkboxes** (see above)—do not present them as ON/OFF text.
 - **Names left, values right** on parameter rows (see Parameter row alignment).
 
 ## Palette defaults
 
-Prefer RGB565 on 16-bit TFTs. Projects may translate to RGB888 / other formats; keep the same named roles. Hex may be overridden per project; roles, 15 px gap, rounded Confirm/Cancel, checkbox binary values, name/value alignment, no font upscale, and the separator threshold are hard rules.
+Prefer RGB565 on 16-bit TFTs. Projects may translate to RGB888 / other formats; keep the same named roles. Hex may be overridden per project; roles, 15 px gap, rounded Confirm/Cancel, checkbox binary values, name/value alignment, no font upscale, one-line-one-bar redraw, per-element clear-then-redraw (no merged clears), and the separator threshold are hard rules.
 
 | Role | RGB565 | Notes |
 |------|--------|--------|

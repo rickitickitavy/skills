@@ -161,4 +161,6 @@ Never upscale. On Adafruit GFX: `setTextSize(1)` and a sized GFXfont (e.g. FreeS
 
 - Don't call full-screen clear in the hot path.
 - Clear only the bar (row) being updated (`fillRect` for that row’s y/height), then redraw its contents.
+- **One text line — one bar.** Never merge several lines into one large clear rectangle.
+- **Per element:** clear that element’s rectangle → redraw it → next element. Never merge multiple elements’ clear regions into one (avoids TFT flicker).
 - Full-screen clear only on first paint or when the whole view changes (e.g. menu level switch).
