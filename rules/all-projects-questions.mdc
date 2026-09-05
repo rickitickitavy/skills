@@ -1,0 +1,13 @@
+---
+description: ALL PROJECTS — never act on questions; never git/file restore without asking
+alwaysApply: true
+---
+
+# ALL PROJECTS (always)
+
+- NEVER use git to restore any changes.
+- NEVER restore a whole file without asking me first.
+- NEVER EVER do an action as a reaction to any question.
+- If I ask any question, you MUST only answer — no edits, no tool side effects, no restores, no git mutations.
+
+Questions → answer only. Explicit tasks → act only within that request.
