@@ -20,7 +20,7 @@ ALWAYS rebind AsyncWebServer when WiFi reconnected in STA mode after disconnect 
 
 - After STA drops, reconnect Wi-Fi, then when the station has an IP again call `server.end()` and `server.begin()`.
 - Keep existing route handlers; rebind only the listen socket.
-- First boot: start the server after Wi-Fi is up. Do not rebind that first `begin()`.
+- First boot: start the server after Wi-Fi is up **and** after Zigbee has started in STA (Zigbee steals the RF and makes a pre-Zigbee `begin()` unreachable). Do not rebind that first `begin()`.
 - Do not leave the console bound only to the pre-disconnect interface.
 
 ```cpp
